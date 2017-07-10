@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Capacloud</title>
+	<script hrerf="/static/jquery.min.js"></script>
+        <link href="/static/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/font-awesome.min.css" rel="stylesheet">
+        <style type="text/css">
+
+    			body {
+    			/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#608f95+0,008588+9,0c2449+52,1a1e3b+100 */
+    			background: rgb(96,143,149); /* Old browsers */
+    			background: -moz-linear-gradient(-45deg, rgba(96,143,149,1) 0%, rgba(0,133,136,1) 9%, rgba(12,36,73,1) 52%, rgba(26,30,59,1) 100%); /* FF3.6-15 */
+    			background: -webkit-linear-gradient(-45deg, rgba(96,143,149,1) 0%,rgba(0,133,136,1) 9%,rgba(12,36,73,1) 52%,rgba(26,30,59,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    			background: linear-gradient(135deg, rgba(96,143,149,1) 0%,rgba(0,133,136,1) 9%,rgba(12,36,73,1) 52%,rgba(26,30,59,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#608f95', endColorstr='#1a1e3b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    			}
+
+        </style>
+    </head>
+    <body>
+
+<div class="container background-color: rgb(255,0,255);">
+  <br>
+  <a href="/"> <button type="button" class="btn btn-default"> Cam </button> </a>
+  <br> <br> <br>
+  <h4>For Training</h4>
+  <input type="text" name="" value="Result will show here" disabled="" id="train"  size="35"> <br /><br />
+  <form action="/train" method="post" enctype="multipart/form-data" name="train">
+      <input type="text" placeholder="Inter leaf name" name="name" size="35"><br /> <br />
+      <input type="file" name="file[]" multiple=""><br />
+      <input type="submit" value="train">
+  </form>
+<br> <br><br> <br>
+</div>
+
+<div class="container background-color: rgb(255,0,255);">
+  <h4>For testing leaf</h4>
+  <input type="text" name="" value="Result will show here" disabled="" id="test" size="35"><br /><br />
+  <form action="/test" method="post" enctype="multipart/form-data" name="test">
+      <input type="file" name="file" ><br />
+      <input type="submit" value="test">
+  </form>
+</div>
+
+<script>
+
+var temp = {{type|tojson}}.toString();
+
+if (temp == "test") {
+    var result1 = {{result|tojson}}.toString();
+    var f = document.getElementById('test');
+    f.value = result1
+}
+if (temp == "train") {
+    var result2 = {{result|tojson}}.toString();
+    var f = document.getElementById('train');
+    f.value = result2
+}
+
+</script>
+    </body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Capacloud</title>
+	<script hrerf="/static/jquery.min.js"></script>
+        <link href="/static/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/font-awesome.min.css" rel="stylesheet">
+        <style type="text/css">
+
+    			body {
+    			/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#608f95+0,008588+9,0c2449+52,1a1e3b+100 */
+    			background: rgb(96,143,149); /* Old browsers */
+    			background: -moz-linear-gradient(-45deg, rgba(96,143,149,1) 0%, rgba(0,133,136,1) 9%, rgba(12,36,73,1) 52%, rgba(26,30,59,1) 100%); /* FF3.6-15 */
+    			background: -webkit-linear-gradient(-45deg, rgba(96,143,149,1) 0%,rgba(0,133,136,1) 9%,rgba(12,36,73,1) 52%,rgba(26,30,59,1) 100%); /* Chrome10-25,Safari5.1-6 */
+    			background: linear-gradient(135deg, rgba(96,143,149,1) 0%,rgba(0,133,136,1) 9%,rgba(12,36,73,1) 52%,rgba(26,30,59,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#608f95', endColorstr='#1a1e3b',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    			}
+
+        </style>
+    </head>
+    <body>
+                  <div class="container background-color: rgb(255,0,255);">
+                        <br>
+                        <a href="/add"> <button type="button" class="btn btn-default"> Additional </button> </a>
+                        <br> <br><br>
+                        <input type="text" placeholder="inter IP" name="ip" id="ip" size="34">
+                        <button class="btn btn-info" type="button" id="chatbot-form-btn" onclick="lol()">SEND </button>
+                        <button type="button" class="btn btn-default" onclick="$.get('http://'+ document.getElementById('ip').value  +':4747/cam/1/af');"> Autofocus </button>
+                        <button type="button" class="btn btn-default" onclick="$(this).toggleClass('active'); $.get('http://'+ document.getElementById('ip').value  +':4747/cam/1/led_toggle');"> Toggle LED </button>
+                        <button type="button" class="btn btn-default" onclick="$.get('http://'+ document.getElementById('ip').value  +':4747/cam/1/zoomout');"> Zoom Out</button>
+                        <button type="button" class="btn btn-default" onclick="$.get('/stop');"> stop </button>
+                        <button type="button" class="btn btn-default" onclick="$.get('http://'+ document.getElementById('ip').value  +':4747/cam/1/zoomin');">Zoom in</button> <br> <br>
+                        <div class="">
+                          <img src="/static/1.jpg" alt="No Image" height="300" width="400" id="img1">
+                          <img src="/static/2.jpg" alt="No Image" height="300" width="400" id="img2">
+                        </div>
+                        <br />
+                        <input type="text" name="leaf" value="Result will show here" disabled="" id="leaf" size="97">
+                  </div>
+                  <script src="/static/jquery-1.12.4.min.js"></script>
+                  <script src="/static/bootstrap.min.js"></script>
+                  <script src="static/mqttws31.js" ></script>
+
+                  <script>
+
+                  // for updating images using js
+
+                  var newImage = new Image();
+                  var newImage1 = new Image();
+                  newImage.src = "static/1.jpg";
+                  newImage1.src = "static/2.jpg";
+                  function updateImage()
+                      {
+                      if(newImage.complete) {
+                          document.getElementById("img1").src = newImage.src;
+                          document.getElementById("img2").src = newImage1.src;
+                          newImage = new Image();
+                          newImage1 = new Image();
+                          newImage.src = "static/1.jpg?val=" + Math.random().toString() ;
+                          newImage1.src = "static/2.jpg?val=" + Math.random().toString() ;
+                      }
+                      setTimeout(updateImage, 1000);
+                  }
+
+                  // for posting IP
+
+                    function lol() {
+                      var data = document.getElementById('ip').value;
+                      document.getElementById('ip').disabled = true;
+                      updateImage();
+                      $.ajax({
+                              type: "POST",
+                              url: "/cam",
+                              data: {'ip': data},
+                              dataType: "text",
+                              success: function(data) {
+                              document.getElementById('ip').disabled = false;
+                              }
+                            });
+                    }
+
+
+                    // Testing for mqtt
+
+                    host = '10.12.35.202';	// hostname or IP address
+                    port = 1884;
+                    topic = 'leaf';		// topic to subscribe to
+
+                    var mqtt;
+                    var reconnectTimeout = 5000;
+
+                    function MQTTconnect() {
+                  	      mqtt = new Paho.MQTT.Client(host, port, "12");
+                          mqtt.onConnectionLost = onConnectionLost;
+                          mqtt.onMessageArrived = onMessageArrived;
+                          console.log("Host="+ host + ", port=" + port );
+                          mqtt.connect( {onSuccess: onConnect });
+                      }
+
+                      function onConnect() {
+                          mqtt.subscribe(topic, {qos: 0});
+                      }
+
+                      function onConnectionLost(response) {
+                          setTimeout(MQTTconnect, reconnectTimeout);
+                      };
+
+                      function onMessageArrived(message) {
+                          var topic = message.destinationName;
+                          var payload = message.payloadString;
+                        	var table = document.getElementById("leaf");
+                        	table.value = payload;
+                      };
+
+                      MQTTconnect();
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  </script>
+    </body>
+</html>
